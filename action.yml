@@ -1,0 +1,27 @@
+name: 'GIT MIRROR'
+description: 'Mirror A GITHUB Project'
+inputs:
+  ssh_private_key:
+    description: 'GITHUB SSH Private Key'
+    required: true
+  name:
+    description: 'Product Name'
+    required: true
+  user:
+    description: 'GITHUB User'
+    required: true
+  cloned_user:
+    description: 'GITHUB Cloned User'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: git-sync
+      if: github.repository == '${{ inputs.user }}/${{ inputs.name }}
+      uses: wei/git-sync@v3
+      with:
+        source_repo: "${{ inputs.user }}/${{ inputs.name }}"
+        source_branch: "refs/remotes/source/*"
+        destination_repo: "${{ inputs.cloned_user }}/${{ inputs.name }}"
+        destination_branch: "refs/heads/*"
+        ssh_private_key: ${{ inputs.ssh_private_key }}
